@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const jwtSecret="MyNameIsEnduvasiSrihariDinesh!@#"
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "https://espacito-admin.netlify.app"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
