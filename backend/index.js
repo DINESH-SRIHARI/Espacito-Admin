@@ -102,7 +102,6 @@ app.delete('/delete/:id', async (req, res) => {
 
 
 
-
 const AdminUser = require('./model/Adminuser');
 
 app.post("/createuser", async (req, res) => {
@@ -144,14 +143,43 @@ const category=mongoose.model('type',catschema)
 
 
 app.post('/adminaddcat', async (req, res) => {
-    const catdata = new category({
-    catname:req.body.categoryName,
-    })
-catdata.save();
+    try {
+      const catdata = new category({
+        catname:req.body.categoryName,
+        })
+    catdata.save();
+    res.json({ success: true, message: 'Category Added successfully'});
+    } catch (error) {
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
   
 });
 
+app.post('/getcategories', async (req, res) => {
+  try {
+    const data =await  category.find();
+    console.log(data)
+  res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 
+});
+//deleting the category
+app.delete('/deletecategory/:id',async(req,res)=>{
+  const { id } = req.params;
+  try {
+    const deletedDocument = await category.findByIdAndDelete(id);
+    if (!deletedDocument) {
+      return res.status(404).json({ success: false, message: 'Document not found' });
+    }
+
+    res.json({ success: true, message: 'category deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+})
 
 
 app.post('/getalldata', async (req, res) => {
@@ -181,7 +209,7 @@ app.get('/getalldata/:id', async (req, res) => {
   try {
     // Use the id parameter to fetch data from MongoDB
     const result = await Food.findById(id);
-    console.log(result);
+    
     if (!result) {
       return res.status(404).json({ error: 'Data not found' });
     }
@@ -305,12 +333,10 @@ app.post('/myorderedData', async (req, res) => {
   }
 });
 app.post('/updateOrderStatus',async(req,res)=>{
-  console.log(req.body.orderId)
-  console.log(req.body.itemIdx)
-  console.log(req.body.newStatus)
+  
   const order = await Orders.findById(req.body.orderId);
   const orderData = order.orderdata;
-  console.log( orderData[req.body.itemIdx][0].status)
+  //console.log( orderData[req.body.itemIdx][0].status)
   try {
     const updated = await Orders.findOneAndUpdate(
       { _id: req.body.orderId },
@@ -328,10 +354,6 @@ app.post('/updateOrderStatus',async(req,res)=>{
     res.status(500).json({ error: 'Internal Server Error' });
   }
 })
-
-
-
-
 
 
 

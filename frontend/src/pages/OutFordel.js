@@ -6,18 +6,15 @@ export default function MyOrder() {
   useEffect(() => {
     const fetchMyOrder = async () => {
       try {
-        const response = await fetch(
-          "https://espacito-admin.onrender.com/myorderedData",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: localStorage.getItem("userEmail"),
-            }),
-          }
-        );
+        const response = await fetch("http://localhost:5000/myorderedData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: localStorage.getItem("userEmail"),
+          }),
+        });
 
         const data = await response.json();
         setOrderData(data.Orderdata);
@@ -28,7 +25,32 @@ export default function MyOrder() {
 
     fetchMyOrder();
   }, []);
-  const handleDropdownChange = (newStatus, index, idx) => {};
+  const handleDropdownChange = async (newStatus, id, idx) => {
+    try {
+      const response = await fetch("http://localhost:5000/updateOrderStatus", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderId: id,
+          itemIdx: idx,
+          newStatus: newStatus,
+        }),
+      });
+
+      if (response.ok) {
+        // If the request is successful, update the orderData state
+        const updatedOrderData = [...orderData];
+        updatedOrderData[id].orderdata[idx][0].status = newStatus;
+        setOrderData(updatedOrderData);
+      } else {
+        console.error("Failed to update order status");
+      }
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
 
   return (
     <div className="accordion accordion-flush" id="accordionFlushExample">
@@ -51,18 +73,20 @@ export default function MyOrder() {
                     >
                       <div className="d-flex justify-content-around">
                         <div>
-                          {tempdata.email} - {temp2[0].Order_date}
+                          {tempdata.email} - {temp2[0].Order_date} -{temp2[0].Geolocation}
                         </div>
                         <div>
                           {temp2[0].status === "Out For Delivery" ? (
                             <div className="d-flex gap-3 ">
-                              🚵
-                              <a href={`tel:${temp2[0].number}`}>
+                              <a className="mx-2 text-warning"  href={`https://www.google.com/maps?q=${temp2[0].Geolocation}`} target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+  <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+</svg></a>
+                              <a className="text-warning"  href={`tel:${temp2[0].number}`}>
                                 {" "}
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
+                                  width="26"
+                                  height="26"
                                   fill="currentColor"
                                   class="bi bi-telephone"
                                   viewBox="0 0 16 16"
@@ -100,16 +124,29 @@ export default function MyOrder() {
                           className="dropdown-menu"
                           aria-labelledby={`dropdownMenuButton${index}-${idx}`}
                         >
+                          
                           <a
                             className="dropdown-item"
                             onClick={() =>
-                              handleDropdownChange("Delivered", index, idx)
+                              handleDropdownChange(
+                                "Delivared",
+                                tempdata._id,
+                                idx
+                              )
                             }
                           >
                             Delivered
                           </a>
                         </div>
                       </div>
+                      <h4 className="mb-3">
+                <span className="text-warning">Order_Id:</span>
+                {temp2[0].Order_Id}
+              </h4>
+              <h4 className="mb-3">
+                <span className="text-warning">TotalPrice:</span>₹
+                {temp2[0].Total_price}
+              </h4>
                       {temp2.map(
                         (item, j) =>
                           // Exclude the 0th index item
@@ -119,23 +156,14 @@ export default function MyOrder() {
                               key={j}
                               style={{
                                 width: "330px",
-                                height: "200px",
+                                height: "170px",
                                 overflowY: "auto",
                                 overflowX: "hidden",
                               }}
                             >
-                              <img
-                                src={item.img}
-                                className="card-img-top"
-                                style={{
-                                  width: "300px",
-                                  height: "200px",
-                                  objectFit: "cover",
-                                }}
-                                alt="Item Image"
-                              />
+                              
                               <div className="card-body">
-                                <h5 className="card-title">{item.name}</h5>
+                                <h5 className="card-title text-warning">{item.name}</h5>
                                 <h6 className="card-text">
                                   Price: ₹{item.price}/- | Quantity:{" "}
                                   {item.qntity} | Size: {item.size}

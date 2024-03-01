@@ -18,7 +18,7 @@ const Card = (props) => {
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        `https://espacito-admin.onrender.com/delete/${props.allitem._id}`
+        `http://localhost:5000/delete/${props.allitem._id}`
       );
       console.log(response.data);
 
@@ -78,8 +78,6 @@ const Card = (props) => {
           <div className="d-inline h-100 fs-5">₹{TotalPrice}</div>
         </div>
         <hr />
-
-        
       </div>
     </div>
   );

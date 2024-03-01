@@ -26,7 +26,7 @@ const Card = (props) => {
 
     try {
       const response = await axios.delete(
-        `https://espacito-admin.onrender.com/delete/${props.allitem._id}`
+        `http://localhost:5000/delete/${props.allitem._id}`
       );
 
       if (response.data.success) {

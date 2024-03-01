@@ -8,12 +8,8 @@ export default function Carousal() {
     // Fetch data from the server
     const fetchData = async () => {
       try {
-        const response = await axios.post(
-          "https://espacito-admin.onrender.com/getalldata"
-        );
+        const response = await axios.post("http://localhost:5000/getalldata");
         setData(response.data);
-        console.log("Category Data:", data.categoryData);
-        console.log("Food Data:", data.foodData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

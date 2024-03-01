@@ -6,18 +6,15 @@ export default function MyOrder() {
   useEffect(() => {
     const fetchMyOrder = async () => {
       try {
-        const response = await fetch(
-          "https://espacito-admin.onrender.com/myorderedData",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: localStorage.getItem("userEmail"),
-            }),
-          }
-        );
+        const response = await fetch("http://localhost:5000/myorderedData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: localStorage.getItem("userEmail"),
+          }),
+        });
 
         const data = await response.json();
         setOrderData(data.Orderdata);
@@ -58,6 +55,14 @@ export default function MyOrder() {
                       idx === 0 ? "show" : ""
                     }`}
                   >
+                    <h4 className="mb-3">
+                <span className="text-warning">Order_Id:</span>
+                {temp2[0].Order_Id}
+              </h4>
+              <h4 className="mb-3">
+                <span className="text-warning">TotalPrice:</span>₹
+                {temp2[0].Total_price}
+              </h4>
                     <div className="accordion-body d-flex gap-2 justify-content-center row">
                       {temp2.map(
                         (item, j) =>

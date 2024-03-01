@@ -13,6 +13,10 @@ import MyOrder from './pages/NewOrder';
 import Carousal2 from './pages/Carousal2';
 import Temp from './components/Temp';
 import OutFordel from './pages/OutFordel'
+import TermsAndConditions from './About/Term';
+import PrivacyPolicy from './About/Privacy';
+
+import Footer from './components/Fotter'
 function App() {
   return (
     <Cardprovider>
@@ -29,7 +33,10 @@ function App() {
           <Route path='/outfordel'element={<OutFordel/>}/>
           <Route path='/delivaredallorders'element={<Delivered/>}/>
           <Route path='/update/:id'element={<Update/>}/>
+          <Route path='/term' element={<TermsAndConditions/>}/>
+          <Route path='/policy' element={<PrivacyPolicy/>}/>
         </Routes>
+        <Footer/>
         <Temp/>
      
     </Cardprovider>

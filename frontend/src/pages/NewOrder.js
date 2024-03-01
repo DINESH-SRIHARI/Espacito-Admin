@@ -6,18 +6,15 @@ export default function MyOrder() {
   useEffect(() => {
     const fetchMyOrder = async () => {
       try {
-        const response = await fetch(
-          "https://espacito-admin.onrender.com/myorderedData",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: localStorage.getItem("userEmail"),
-            }),
-          }
-        );
+        const response = await fetch("http://localhost:5000/myorderedData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: localStorage.getItem("userEmail"),
+          }),
+        });
 
         const data = await response.json();
         setOrderData(data.Orderdata);
@@ -30,28 +27,26 @@ export default function MyOrder() {
   }, []);
   const handleDropdownChange = async (newStatus, id, idx) => {
     try {
-      const response = await fetch(
-        "https://espacito-admin.onrender.com/updateOrderStatus",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            orderId: id,
-            itemIdx: idx,
-            newStatus: newStatus,
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:5000/updateOrderStatus", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderId: id,
+          itemIdx: idx,
+          newStatus: newStatus,
+        }),
+      });
 
       if (response.ok) {
         // If the request is successful, update the orderData state
         const updatedOrderData = [...orderData];
         updatedOrderData[id].orderdata[idx][0].status = newStatus;
         setOrderData(updatedOrderData);
+        window.location.reload();
       } else {
-        console.error("Failed to update order status");
+        alert("Failed to update order status");
       }
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -114,7 +109,7 @@ export default function MyOrder() {
                               handleDropdownChange(
                                 "Out For Delivery",
                                 tempdata._id,
-                                index
+                                idx
                               )
                             }
                           >
@@ -143,21 +138,11 @@ export default function MyOrder() {
                               key={j}
                               style={{
                                 width: "330px",
-                                height: "200px",
+                                height: "170px",
                                 overflowY: "auto",
                                 overflowX: "hidden",
                               }}
                             >
-                              <img
-                                src={item.img}
-                                className="card-img-top"
-                                style={{
-                                  width: "300px",
-                                  height: "200px",
-                                  objectFit: "cover",
-                                }}
-                                alt="Item Image"
-                              />
                               <div className="card-body">
                                 <h5 className="card-title">{item.name}</h5>
                                 <h6 className="card-text">

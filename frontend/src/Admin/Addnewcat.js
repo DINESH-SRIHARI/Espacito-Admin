@@ -1,63 +1,55 @@
 import React, { useState, useEffect } from "react";
-import catimg from "../statics/sigin.jpg";
-import catcss from "../css/catcss.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Addnewcat() {
   const [credentials, setCredentials] = useState({
     categoryName: "",
   });
   const [categories, setCategories] = useState([]);
+  const navigate = useNavigate(); // Use useNavigate hook to get the navigation function
 
   useEffect(() => {
     // Fetch and set categories data
     const fetchCategories = async () => {
       try {
-        const response = await fetch(
-          "https://espacito-admin.onrender.com/getcategories"
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const categoriesData = await response.json();
-        setCategories(categoriesData);
+        const response = await axios.post("http://localhost:5000/getcategories");
+        setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error.message);
       }
     };
 
     fetchCategories();
-  }, []);
+  }, []); // Empty dependency array means this effect runs only once
+
+  useEffect(() => {
+    console.log(categories); // Log updated categories whenever it changes
+  }, [categories]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        "https://espacito-admin.onrender.com/adminaddcat",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            categoryName: credentials.categoryName,
-          }),
-        }
-      );
-
+      const response = await fetch("http://localhost:5000/adminaddcat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          categoryName: credentials.categoryName,
+        }),
+      });
+      const json = await response.json();
+      console.log(json);
       if (!response.ok) {
+        alert("Error Occur");
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
-      // Refresh categories after adding a new one
-      const newCategories = await fetch(
-        "https://espacito-admin.onrender.com/getcategories"
-      ).then((response) => response.json());
-      setCategories(newCategories);
-
-      // Clear the input field
-      setCredentials({ categoryName: "" });
+      if (json.success) {
+        alert("New Category Added Sucessfully");
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Error during fetch:", error.message);
     }
@@ -65,22 +57,22 @@ export default function Addnewcat() {
 
   const handleDelete = async (categoryId) => {
     try {
-      const response = await fetch(
-        `https://espacito-admin.onrender.com/deletecategory/${categoryId}`,
-        {
-          method: "DELETE",
-        }
-      );
-
+      const response = await fetch(`http://localhost:5000/deletecategory/${categoryId}`, {
+        method: "DELETE",
+      });
+      const json = await response.json();
+      if (json.success) {
+        alert("New Category Added Sucessfully");
+        window.location.reload();
+      }
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
-      // Refresh categories after deleting one
-      const newCategories = await fetch(
-        "https://espacito-admin.onrender.com/getcategories"
-      ).then((response) => response.json());
+      const newCategories = await fetch("http://localhost:5000/getcategories").then((response) =>
+        response.json()
+      );
       setCategories(newCategories);
+      
     } catch (error) {
       console.error("Error during fetch:", error.message);
     }
@@ -118,10 +110,10 @@ export default function Addnewcat() {
         <h4>Categories:</h4>
         <ul>
           {categories.map((category) => (
-            <li key={category._id}>
-              {category.categoryName}
+            <li key={category._id} className="mt-3">
+              {category.catname}
               <button
-                className="btn btn-danger ms-2"
+                className="btn btn-outline-danger  ms-2"
                 onClick={() => handleDelete(category._id)}
               >
                 Delete

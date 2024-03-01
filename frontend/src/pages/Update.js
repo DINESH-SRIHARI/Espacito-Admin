@@ -22,7 +22,7 @@ export default function Update() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://espacito-admin.onrender.com/getalldata/${id}`
+          `http://localhost:5000/getalldata/${id}`
         );
         setCredentials(response.data);
       } catch (error) {
@@ -35,24 +35,21 @@ export default function Update() {
     e.preventDefault();
 
     try {
-      const response = await fetch(
-        `https://espacito-admin.onrender.com/updated/${id}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            categoryName: credentials.categoryName,
-            name: credentials.name,
-            imageURL: credentials.imageURL,
-            regular: credentials.regular,
-            medium: credentials.medium,
-            large: credentials.large,
-            description: credentials.description,
-          }),
-        }
-      );
+      const response = await fetch(`http://localhost:5000/updated/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          categoryName: credentials.categoryName,
+          name: credentials.name,
+          imageURL: credentials.imageURL,
+          regular: credentials.regular,
+          medium: credentials.medium,
+          large: credentials.large,
+          description: credentials.description,
+        }),
+      });
       const json = await response.json();
       console.log(json);
       if (!response.ok) {
@@ -61,7 +58,7 @@ export default function Update() {
       }
       if (json.success) {
         alert("Updated Sucessfully");
-        navigate("/");
+        navigate("/Change");
       }
 
       // Handle the response as needed
