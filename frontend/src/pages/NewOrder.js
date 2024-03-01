@@ -6,15 +6,18 @@ export default function MyOrder() {
   useEffect(() => {
     const fetchMyOrder = async () => {
       try {
-        const response = await fetch("http://localhost:5000/myorderedData", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: localStorage.getItem("userEmail"),
-          }),
-        });
+        const response = await fetch(
+          "https://espacito-admin.onrender.com/myorderedData",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: localStorage.getItem("userEmail"),
+            }),
+          }
+        );
 
         const data = await response.json();
         setOrderData(data.Orderdata);
@@ -27,17 +30,20 @@ export default function MyOrder() {
   }, []);
   const handleDropdownChange = async (newStatus, id, idx) => {
     try {
-      const response = await fetch("http://localhost:5000/updateOrderStatus", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          orderId: id,
-          itemIdx: idx,
-          newStatus: newStatus,
-        }),
-      });
+      const response = await fetch(
+        "https://espacito-admin.onrender.com/updateOrderStatus",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            orderId: id,
+            itemIdx: idx,
+            newStatus: newStatus,
+          }),
+        }
+      );
 
       if (response.ok) {
         // If the request is successful, update the orderData state

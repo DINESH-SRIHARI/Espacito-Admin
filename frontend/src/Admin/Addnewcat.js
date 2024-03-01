@@ -13,7 +13,7 @@ export default function Addnewcat() {
     // Fetch and set categories data
     const fetchCategories = async () => {
       try {
-        const response = await axios.post("http://localhost:5000/getcategories");
+        const response = await axios.post("https://espacito-admin.onrender.com/getcategories");
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error.message);
@@ -31,7 +31,7 @@ export default function Addnewcat() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/adminaddcat", {
+      const response = await fetch("https://espacito-admin.onrender.com/adminaddcat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export default function Addnewcat() {
 
   const handleDelete = async (categoryId) => {
     try {
-      const response = await fetch(`http://localhost:5000/deletecategory/${categoryId}`, {
+      const response = await fetch(`https://espacito-admin.onrender.com/deletecategory/${categoryId}`, {
         method: "DELETE",
       });
       const json = await response.json();
@@ -68,7 +68,7 @@ export default function Addnewcat() {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const newCategories = await fetch("http://localhost:5000/getcategories").then((response) =>
+      const newCategories = await fetch("https://espacito-admin.onrender.com/getcategories").then((response) =>
         response.json()
       );
       setCategories(newCategories);

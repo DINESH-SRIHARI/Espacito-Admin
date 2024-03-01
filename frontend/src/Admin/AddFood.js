@@ -18,21 +18,24 @@ export default function AddFood() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5000/addfood", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          categoryName: credentials.categoryName,
-          name: credentials.name,
-          imageURL: credentials.imageURL,
-          regular: credentials.regular,
-          medium: credentials.medium,
-          large: credentials.large,
-          description: credentials.description,
-        }),
-      });
+      const response = await fetch(
+        "https://espacito-admin.onrender.com/addfood",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            categoryName: credentials.categoryName,
+            name: credentials.name,
+            imageURL: credentials.imageURL,
+            regular: credentials.regular,
+            medium: credentials.medium,
+            large: credentials.large,
+            description: credentials.description,
+          }),
+        }
+      );
       const json = await response.json();
       console.log(json);
       if (json.success) {
