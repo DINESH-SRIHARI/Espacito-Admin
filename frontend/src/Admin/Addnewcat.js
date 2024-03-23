@@ -13,7 +13,9 @@ export default function Addnewcat() {
     // Fetch and set categories data
     const fetchCategories = async () => {
       try {
-        const response = await axios.post("https://espacito-admin.onrender.com/getcategories");
+        const response = await axios.post(
+          "https://espacito-admin.onrender.com/getcategories"
+        );
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error.message);
@@ -23,25 +25,25 @@ export default function Addnewcat() {
     fetchCategories();
   }, []); // Empty dependency array means this effect runs only once
 
-  useEffect(() => {
-    console.log(categories); // Log updated categories whenever it changes
-  }, [categories]);
+  useEffect(() => {}, [categories]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://espacito-admin.onrender.com/adminaddcat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          categoryName: credentials.categoryName,
-        }),
-      });
+      const response = await fetch(
+        "https://espacito-admin.onrender.com/adminaddcat",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            categoryName: credentials.categoryName,
+          }),
+        }
+      );
       const json = await response.json();
-      console.log(json);
       if (!response.ok) {
         alert("Error Occur");
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -57,22 +59,24 @@ export default function Addnewcat() {
 
   const handleDelete = async (categoryId) => {
     try {
-      const response = await fetch(`https://espacito-admin.onrender.com/deletecategory/${categoryId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `https://espacito-admin.onrender.com/deletecategory/${categoryId}`,
+        {
+          method: "DELETE",
+        }
+      );
       const json = await response.json();
       if (json.success) {
-        alert("New Category Added Sucessfully");
+        alert("Category Deleted Sucessfully");
         window.location.reload();
       }
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const newCategories = await fetch("https://espacito-admin.onrender.com/getcategories").then((response) =>
-        response.json()
-      );
+      const newCategories = await fetch(
+        "https://espacito-admin.onrender.com/getcategories"
+      ).then((response) => response.json());
       setCategories(newCategories);
-      
     } catch (error) {
       console.error("Error during fetch:", error.message);
     }

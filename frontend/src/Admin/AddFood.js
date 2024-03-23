@@ -37,7 +37,6 @@ export default function AddFood() {
         }
       );
       const json = await response.json();
-      console.log(json);
       if (json.success) {
         alert("Added Sucessfully");
         navigate("/");

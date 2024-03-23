@@ -27,19 +27,15 @@ export default function Login() {
         }
       );
       const json = await response.json();
-      console.log(json);
       if (!response.ok) {
-        console.log("response");
         alert("Enter Valid Details");
       }
       if (!json.success) {
         alert("Enter Valid Details");
       }
       if (json.success) {
-        console.log("sucesses");
         localStorage.setItem("userEmail", credentials.email);
         localStorage.setItem("authToken", json.authtoken);
-        console.log(localStorage.getItem("authToken"));
         navigate("/");
       }
     } catch (error) {

@@ -20,13 +20,6 @@ const Card = (props) => {
       const response = await axios.delete(
         `https://espacito-admin.onrender.com/delete/${props.allitem._id}`
       );
-      console.log(response.data);
-
-      // if (!response.ok) {
-      //   alert("Error Occur");
-      //   throw new Error(`HTTP error! Status: ${response.status}`);
-
-      // }
       if (response.data.success) {
         alert("Deleted Sucessfully");
         navigate("/adminaddfood");

@@ -23,9 +23,8 @@ function App() {
        
         <Nav/>
         <Routes>
-          <Route path='/'element={<Carousal/>}/>
+          <Route path='/'element={<Carousal2/>}/>
           <Route path='/login'element={<Login/>}/>
-          <Route path='/Change'element={<Carousal2/>}/>
           <Route path='/createuser'element={<Signin/>}/>
           <Route path='/adminaddfood'element={<AddFood/>}/>
           <Route path='/adminaddcat'element={<Addnewcat/>}/>

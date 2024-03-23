@@ -3,7 +3,41 @@ import axios from "axios";
 import Card2 from "../components/Card2";
 export default function Carousal() {
   const [data, setData] = useState({ foodData: [], categoryData: [] });
-
+  const [search, setSearch] = useState();
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (search == "") {
+      try {
+        const response = await axios.post(
+          `https://espacito-admin.onrender.com
+/getalldata`
+        );
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    } else {
+      try {
+        const response = await fetch(
+          `https://espacito-admin.onrender.com
+/search`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              Item: search,
+            }),
+          }
+        );
+        const json = await response.json();
+        setData(json);
+      } catch (error) {
+        console.error("Error during fetch:", error.message);
+      }
+    }
+  };
   useEffect(() => {
     // Fetch data from the server
     const fetchData = async () => {
@@ -34,8 +68,12 @@ export default function Carousal() {
                 type="search"
                 placeholder="Search"
                 aria-label="Search"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
               />
-              <button className="btn btn-warning" type="submit">
+              <button className="btn btn-warning" onClick={handleSearch}>
                 Search
               </button>
             </form>

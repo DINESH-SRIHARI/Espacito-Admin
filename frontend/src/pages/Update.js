@@ -54,7 +54,6 @@ export default function Update() {
         }
       );
       const json = await response.json();
-      console.log(json);
       if (!response.ok) {
         alert("Error Occur");
         throw new Error(`HTTP error! Status: ${response.status}`);

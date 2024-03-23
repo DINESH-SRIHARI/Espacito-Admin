@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const jwtSecret="MyNameIsEnduvasiSrihariDinesh!@#"
 app.use(cors({
-  origin: ["http://localhost:3000", "https://espacito-admin.netlify.app"],
+  origin: ["http://localhost:3000", "https://espocito-admin.netlify.app"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
@@ -32,7 +32,6 @@ app.post("/addfood", (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  console.log(req.body.categoryName)
   const data = new Food({
     categoryName: req.body.categoryName,
     name: req.body.name,
@@ -46,6 +45,23 @@ app.post("/addfood", (req, res) => {
   data.save();
   res.json({ success: true});
 });
+//search an item
+app.post('/search', async (req, res) => {
+  try {
+    const allData = await Food.find({ name: { $regex: req.body.Item, $options: 'i' } });
+    const allDatacat = await category.find();
+    const combinedData = {
+      foodData: allData,
+      categoryData: allDatacat
+    };
+
+    res.json(combinedData);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 //updating the card fetails
 app.post("/updated/:id", async(req, res) => {
   const { id } = req.params;
@@ -116,7 +132,6 @@ app.post("/createuser", async (req, res) => {
       password: req.body.password,
       email: req.body.email,
     });
-    console.log(data);
     await data.save();
     res.redirect("/")
     
@@ -158,7 +173,6 @@ app.post('/adminaddcat', async (req, res) => {
 app.post('/getcategories', async (req, res) => {
   try {
     const data =await  category.find();
-    console.log(data)
   res.json(data);
   } catch (error) {
     res.status(500).json({ message: 'Internal Server Error' });
@@ -205,7 +219,6 @@ app.post('/getalldata', async (req, res) => {
 //admin edit option here
 app.get('/getalldata/:id', async (req, res) => {
   const { id } = req.params;
-  console.log("this is called admin edit")
   try {
     // Use the id parameter to fetch data from MongoDB
     const result = await Food.findById(id);
@@ -258,7 +271,6 @@ app.post("/loginuser", [
       return res.status(400).json({ errors: [{ msg: 'Invalid Email Address' }] });
     }
     if (req.body.password!==userRecord.password) {
-      console.log(pwdcompare)
       return res.status(400).json({ errors: [{ msg: 'Invalid Password' }] });
     }
       const data={
@@ -268,8 +280,6 @@ app.post("/loginuser", [
       }
       const authtoken=jwt.sign(data,jwtSecret)
       res.json({ success: true, authtoken:authtoken });
-      console.log(authtoken)
-      console.log("User LoggedIn");
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -290,12 +300,11 @@ app.post('/orderedData',async(req,res)=>{
         orderdata:[data]
       })
     } catch (error) {
-      console.log(error)
+      res.send(error)
     }
   }
   else{
     try {
-      console.log("it is old")
       await Orders.findOneAndUpdate({email:req.body.email},
         {
           $push:{orderdata:data}}).then(()=>{
@@ -336,7 +345,6 @@ app.post('/updateOrderStatus',async(req,res)=>{
   
   const order = await Orders.findById(req.body.orderId);
   const orderData = order.orderdata;
-  //console.log( orderData[req.body.itemIdx][0].status)
   try {
     const updated = await Orders.findOneAndUpdate(
       { _id: req.body.orderId },
